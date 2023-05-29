@@ -1,0 +1,24 @@
+/*********************************************
+         MYCGV_MEMBMER 테이블 
+*********************************************/
+-- 회원가입, 로그인, 관리자(회원관리등)
+-- 컬럼리스트 : ID, PASS, NAME, GENDER, EMAIL, ADDR, TEL, PNUMBER, HOBBYLIST, INTRO,MDATE;
+-- ****  UI폼 NAME = VO 필드명 = 테이블 컬럼명
+CREATE TABLE MYCGV_MEMBER(
+    ID            VARCHAR2(30)    CONSTRAINT  PK_MYCGV_MEMBER_ID  PRIMARY KEY,
+    PASS        VARCHAR2(30)  NOT NULL,
+    NAME      VARCHAR2(30) NOT NULL,
+    GENDER    VARCHAR2(1) NOT NULL,
+    EMAIL       VARCHAR2(50)  NOT NULL,
+    ADDR        VARCHAR2(150)  NOT NULL,
+    TEL             VARCHAR2(10)   NOT NULL,
+    PNUMBER   VARCHAR2(30)  NOT NULL,
+    HOBBYLIST  VARCHAR2(50)  NOT NULL,
+    INTRO        VARCHAR2(200) ,
+    MDATE      DATE    
+);
+SELECT * FROM USER_TABLES WHERE TABLE_NAME='MYCGV_MEMBER';
+DESC MYCGV_MEMBER;
+SELECT * FROM MYCGV_MEMBER;
+DELETE  FROM MYCGV_MEMBER WHERE ID LIKE 'tet%';
+commit;

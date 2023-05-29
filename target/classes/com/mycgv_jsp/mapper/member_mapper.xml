@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 넘어오는 parameter값이 하나 이상이면 vo객체로 넘겨라 -->
+<mapper namespace="mapper.member">
+	<select id="login" parameterType="com.mycgv_jsp.vo.MemberVo" resultType="int">
+		select count(*) from mycgv_member where id=#{id} and pass=#{pass}	
+	</select>
+	
+	<insert id="join" parameterType="com.mycgv_jsp.vo.MemberVo">
+		insert into mycgv_member (id, pass, name, gender, email, addr, tel, pnumber, hobbylist, intro, mdate, grade)
+		values (#{id},#{pass},#{name}, #{gender},#{email},#{addr},#{tel},#{pnumber},#{hobbyList},#{intro},sysdate,'GOLD')
+	</insert>
+</mapper>   
