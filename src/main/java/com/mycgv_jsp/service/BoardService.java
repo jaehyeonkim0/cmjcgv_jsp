@@ -12,6 +12,4 @@ public interface BoardService {
 	int getUpdate(BoardVo boardVo);
 	int getDelete(String bid);
 	void getUpdateHits(String bid);
-	int getTotalRowCount();
-
 }

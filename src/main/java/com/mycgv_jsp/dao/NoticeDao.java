@@ -1,33 +1,32 @@
 package com.mycgv_jsp.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import com.mycgv_jsp.vo.BoardVo;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
 import com.mycgv_jsp.vo.NoticeVo;
 
-public class NoticeDao extends DBConn{
+@Repository
+public class NoticeDao implements MycgvDao {
 	
-	/** 전체 카운트 가져오기 - 페이징 처리*/
-	public int totalRowCount() {
-			int count = 0;
-			String sql = "select count(*) from mycgv_notice";
-			getPreparedStatement(sql);
-			
-			try {
-				rs = pstmt.executeQuery();
-				while(rs.next()) {				
-					count = rs.getInt(1);
-				}			
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			return count;		
-		}
+	@Autowired
+	private SqlSessionTemplate sqlSession;
 	
 	/**select - 게시글 전체 리스트 - 페이징 처리(startCount,endCount)*/
-	public ArrayList<NoticeVo> select(int startCount, int endCount){
+	public List<Object> select(int startCount, int endCount){
+		Map<String, Integer> param = new HashMap<String, Integer>();
+		param.put("start", startCount);
+		param.put("end", endCount);
+		
+		//List<NoticeVo> list = sqlSession.selectList("mapper.notice.list", param);
+		
+		return sqlSession.selectList("mapper.notice.list", param);
+		/*
 		ArrayList<NoticeVo> list = new ArrayList<NoticeVo>();
 		StringBuffer sb = new StringBuffer();
 		sb.append("select rno, nid, ntitle, ncontent, nhits, ndate from (")
@@ -58,11 +57,13 @@ public class NoticeDao extends DBConn{
 		}
 		
 		return list;
+		*/
 	}
 	
-	
-	public int insert(NoticeVo noticeVo) {
-		
+	@Override
+	public int insert(Object noticeVo) {
+		return sqlSession.insert("mapper.notice.insert", noticeVo);
+		/*
 		int result=0;
 		String sql = "insert into mycgv_notice (nid, ntitle, ncontent, nhits, ndate) values "
 				+ "('n_'||ltrim(to_char(sequ_mycgv_notice.nextval,'0000')),?,?,0,sysdate)";
@@ -78,10 +79,13 @@ public class NoticeDao extends DBConn{
 		}
 		
 		return result;
-		
+		*/
 	}
 	
 	public ArrayList<NoticeVo> select(){
+		List<NoticeVo> list = sqlSession.selectList("mapper.notice.list2");
+		return (ArrayList<NoticeVo>) list;
+		/*
 		ArrayList<NoticeVo> list = new ArrayList<NoticeVo>();
 		String sql = "select rownum rno, nid, ntitle, ncontent, nhits, to_char(ndate, 'YY-MM-DD') ndate from ("
 				+ "select nid, ntitle, ncontent, nhits, ndate from mycgv_notice order by ndate desc)";
@@ -108,9 +112,12 @@ public class NoticeDao extends DBConn{
 		}
 		
 		return list;
+		*/
 	}
 	
 	public NoticeVo select(String nid) {
+		return sqlSession.selectOne("mapper.notice.content", nid);
+		/*
 		NoticeVo noticeVo = null;
 		String sql = "select nid, ntitle, ncontent, nhits, to_char(ndate, 'YY-MM-DD') ndate from mycgv_notice where nid=?";
 		getPreparedStatement(sql);
@@ -133,9 +140,12 @@ public class NoticeDao extends DBConn{
 			e.printStackTrace();
 		}
 		return noticeVo;
+		*/
 	}
 	
 	public int update(NoticeVo noticeVo) {
+		return sqlSession.update("mapper.notice.update", noticeVo);
+		/*
 		int result=0;
 		String sql = "update mycgv_notice set ntitle=?, ncontent=? where nid=?";
 		getPreparedStatement(sql);
@@ -151,9 +161,12 @@ public class NoticeDao extends DBConn{
 			e.printStackTrace();
 		}
 		return result;
+		*/
 	}
 	
 	public int delete(String nid) {
+		return sqlSession.delete("mapper.notice.delete", nid);
+		/*
 		int result=0;
 		String sql = "delete from mycgv_notice where nid=?";
 		getPreparedStatement(sql);
@@ -166,10 +179,12 @@ public class NoticeDao extends DBConn{
 			System.out.println(e.toString());
 		}
 		return result;
-		
+		*/
 	}
 	
 	public void updateNhits(String nid) {
+		sqlSession.update("mapper.notice.updateHits", nid);
+		/*
 		String sql = "update mycgv_notice set nhits=nhits+1 where nid=?";
 		getPreparedStatement(sql);
 		
@@ -180,7 +195,7 @@ public class NoticeDao extends DBConn{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		*/
 	}
 
 }

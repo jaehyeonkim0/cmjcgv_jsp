@@ -12,4 +12,15 @@
 		insert into mycgv_member (id, pass, name, gender, email, addr, tel, pnumber, hobbylist, intro, mdate, grade)
 		values (#{id},#{pass},#{name}, #{gender},#{email},#{addr},#{tel},#{pnumber},#{hobbyList},#{intro},sysdate,'GOLD')
 	</insert>
+	
+	<select id="idcheck" parameterType="String" resultType="int">
+		select count(*) from mycgv_member where id=#{id}
+	</select>
+	
+	<select id="list" parameterType="map" resultType="com.mycgv_jsp.vo.MemberVo">
+	select rno, id, name, mdate, grade from (
+	select rownum rno, id, name, to_char(mdate,'YYYY-MM-DD') mdate, grade from (
+	select id, name, mdate, grade from mycgv_member order by mdate desc))
+	where rno between #{start} and #{end}
+	</select>
 </mapper>   

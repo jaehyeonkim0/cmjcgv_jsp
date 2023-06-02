@@ -1,6 +1,9 @@
 package com.mycgv_jsp.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,15 +12,15 @@ import org.springframework.stereotype.Repository;
 import com.mycgv_jsp.vo.MemberVo;
 //3. repository = 실행한 결과만 가지고 있는 거; 실제 실행 안함
 @Repository
-public class MemberDao extends DBConn{
-	
+public class MemberDao implements MycgvDao {
 	
 	//1. SqlSession을 쓴다
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
-	/** 전체 카운트 가져오기 - 페이징 처리*/
+	/** 전체 카운트 가져오기 - 페이징 처리
 	public int totalRowCount() {
+		
 			int count = 0;
 			String sql = "select count(*) from mycgv_member";
 			getPreparedStatement(sql);
@@ -34,11 +37,13 @@ public class MemberDao extends DBConn{
 			
 			return count;		
 		}
-	
+	*/
 	/**
 	 * idCheck - 아이디 중복체크
 	 */
 	public int idCheck(String id) {
+		return sqlSession.selectOne("mapper.member.idcheck", id);
+		/*
 		int result = 0;
 		String sql = "SELECT COUNT(*) FROM MYCGV_MEMBER WHERE ID=?";
 		getPreparedStatement(sql);
@@ -56,12 +61,14 @@ public class MemberDao extends DBConn{
 		}
 		
 		return result;
+		*/
 	}
 	
 	/**
 	 * insert - 회원가입
 	 */
-	public int insert(MemberVo memberVo) {
+	@Override
+	public int insert(Object memberVo) {
 		return sqlSession.insert("mapper.member.join", memberVo);
 	}
 	
@@ -91,9 +98,16 @@ public class MemberDao extends DBConn{
 		return result;
 		*/
 	}
-	
-	public ArrayList<MemberVo> select(int startCount, int endCount){
+	@Override
+	public List<Object> select(int startCount, int endCount){
+		Map<String, Integer> param = new HashMap<String, Integer>();
+		param.put("start", startCount);
+		param.put("end", endCount);
 		
+		//List<MemberVo> list = sqlSession.selectList("mapper.member.list", param);
+		
+		return sqlSession.selectList("mapper.member.list", param);
+		/*
 		ArrayList<MemberVo> list = new ArrayList<MemberVo>();
 		String sql = "select rno, id, name, mdate, grade from ( "
 				+ "select rownum rno, id, name, to_char(mdate,'YYYY-MM-DD') mdate, grade from ("
@@ -125,7 +139,7 @@ public class MemberDao extends DBConn{
 		}
 		
 		return list;
-		
+		*/
 	}
 }
 

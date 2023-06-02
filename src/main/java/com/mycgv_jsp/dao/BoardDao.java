@@ -1,12 +1,22 @@
 package com.mycgv_jsp.dao;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import com.mycgv_jsp.vo.BoardVo;
-
-public class BoardDao extends DBConn {
+@Repository
+public class BoardDao implements MycgvDao {
 	
-	/** 전체 카운트 가져오기 - 페이징 처리*/
+	@Autowired
+	private SqlSessionTemplate sqlSession;
+	
+	/** 전체 카운트 가져오기 - 페이징 처리
 	public int totalRowCount() {
 			int count = 0;
 			String sql = "select count(*) from mycgv_board";
@@ -24,9 +34,19 @@ public class BoardDao extends DBConn {
 			
 			return count;		
 		}
+	*/
 	
 	/**select - 게시글 전체 리스트 - 페이징 처리(startCount,endCount)*/
-	public ArrayList<BoardVo> select(int startCount, int endCount){
+	public List<Object> select(int startCount, int endCount){
+		Map<String, Integer> param = new HashMap<String, Integer>();
+		param.put("start", startCount);
+		param.put("end", endCount);
+		
+		//List<BoardVo> list = sqlSession.selectList("mapper.board.list", param);
+		
+		return sqlSession.selectList("mapper.board.list", param);
+		
+		/*
 		ArrayList<BoardVo> list = new ArrayList<BoardVo>();
 		StringBuffer sb = new StringBuffer();
 		sb.append("select rno, bid, btitle, bcontent, bhits, id, bdate from (")
@@ -58,12 +78,20 @@ public class BoardDao extends DBConn {
 		}
 		
 		return list;
+		*/
 	}
 	
 	
-	/**insert - 게시글 등록*/
+	/**insert - 게시글 등록
 	public int insert(BoardVo boardVo) {
-		
+		return sqlSession.insert("mapper.board.insert", boardVo);
+	*/
+
+	@Override
+	public int insert(Object boardVo) {
+		return sqlSession.insert("mapper.board.insert", (BoardVo)boardVo);
+	}
+		/*
 		int result=0;
 		StringBuffer sb = new StringBuffer();
 		sb.append("insert into mycgv_board (bid, btitle, bcontent, bhits, id, bdate, bfile, bsfile) ")
@@ -84,7 +112,9 @@ public class BoardDao extends DBConn {
 			e.printStackTrace();
 		}
 		return result;
+		
 	}
+	*/
 	
 	/**select - 게시글 전체 리스트
 	public ArrayList<BoardVo> select(){
@@ -122,6 +152,8 @@ public class BoardDao extends DBConn {
 	*/
 	
 	public BoardVo select(String bid) {
+		return sqlSession.selectOne("mapper.board.content", bid);
+		/*
 		BoardVo boardVo = null;
 		String sql = "select bid, btitle, bcontent, bhits, id, to_char(bdate,'YY-MM-DD HH:MI') bdate, bfile, bsfile from mycgv_board where bid=?";
 		getPreparedStatement(sql);
@@ -148,12 +180,14 @@ public class BoardDao extends DBConn {
 			e.printStackTrace();
 		}
 		return boardVo;
+		*/
 	}
 	
 	/**조회 수 증가*/
 	public void updateHits(String bid) {
-		
-		String sql = "update mycgv_board set bhits =  bhits + 1 where bid = ?";
+		sqlSession.update("mapper.board.updateHits", bid);
+		/*
+		String sql = "update mycgv_board set bhits = bhits + 1 where bid = ?";
 		getPreparedStatement(sql);
 		
 		try {
@@ -163,24 +197,12 @@ public class BoardDao extends DBConn {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		*/
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	public int update(BoardVo boardVo) {
+		return sqlSession.update("mapper.board.update", boardVo);
+		/*
 		int result=0;
 		String sql = "update mycgv_board set btitle=?, bcontent=? where bid=?";
 		getPreparedStatement(sql);
@@ -199,9 +221,12 @@ public class BoardDao extends DBConn {
 		}
 		
 		return result;
+		*/
 	}
 	
 	public int delete(String bid) {
+		return sqlSession.delete("mapper.board.delete", bid);
+		/*
 		int result=0;
 		String sql = "delete from mycgv_board where bid=?";
 		getPreparedStatement(sql);
@@ -217,7 +242,10 @@ public class BoardDao extends DBConn {
 		}
 		
 		return result;
+		*/
 	}
+
+
 	
 	
 	

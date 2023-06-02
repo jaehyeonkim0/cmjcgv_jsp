@@ -6,16 +6,21 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+import com.mycgv_jsp.dao.PageDao;
+
+@Service("pageService")
 public class PageServiceImpl {
 	
+	@Autowired
+	private PageDao pageDao;
+	/*
 	@Autowired
 	private NoticeService noticeService;
 	@Autowired
 	private MemberService memberService;
 	@Autowired
 	private BoardService boardService;
-	
+	*/
 	//페이징 처리는 list에만 들어간다
 	public Map<String, Integer> getPageResult(String page, String serviceName) {
 		
@@ -33,13 +38,13 @@ public class PageServiceImpl {
 			//매개변수 serviceType을 noticeService 변환
 			//들어올 땐 Object 타입이라 형변환 해야됨
 			//noticeService = (NoticeService)serviceType;
-			dbCount = noticeService.getTotalRowCount();
+			dbCount = pageDao.totalRowCount(serviceName);
 			pageSize = 3;
 		}else if(serviceName.equals("member")) {
-			dbCount = memberService.getTotalRowCount();
+			dbCount = pageDao.totalRowCount(serviceName);
 			pageSize = 3;
 		}else if(serviceName.equals("board")) {
-			dbCount = boardService.getTotalRowCount();
+			dbCount = pageDao.totalRowCount(serviceName);
 			pageSize = 4;
 		}
 		

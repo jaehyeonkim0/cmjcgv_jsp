@@ -144,8 +144,6 @@ public class AdminController {
 		mav.addObject("page", param.get("page"));
 		
 		return mav;
-		
-		
 	}
 
 }

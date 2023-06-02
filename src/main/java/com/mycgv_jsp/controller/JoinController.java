@@ -41,7 +41,7 @@ public class JoinController {
 		
 		return mav;
 	}
-	
+	//ResponseBody가 있으면 viewResolver한테 안 가고 js로 감
 	@RequestMapping(value="/id_check.do", method=RequestMethod.GET)
 	@ResponseBody
 	public String id_check(String id) {

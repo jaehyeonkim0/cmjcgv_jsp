@@ -24,17 +24,39 @@
 		<beans:property name="suffix" value=".jsp" />
 	</beans:bean>
 	
-	<!-- Service -->
+	<!-- Service; 하나 만들어서 전체 프로젝트에서 사용하고 싶을 때 이렇게 작성; 근데 개발자가 직접 객체생성 못하게 막고싶을 때;
+	하나 만들어서 다 공유하고 싶을 때; 무분별하게 객체생성 안하고싶을 때
 	<beans:bean id="memberService" class="com.mycgv_jsp.service.MemberServiceImpl"></beans:bean>
 	<beans:bean id="boardService" class="com.mycgv_jsp.service.BoardServiceImpl"></beans:bean>
 	<beans:bean id="noticeService" class="com.mycgv_jsp.service.NoticeServiceImpl"></beans:bean>
 	<beans:bean id="pageService" class="com.mycgv_jsp.service.PageServiceImpl"></beans:bean>
+	 -->
+	<!-- multipartResolver -->
 	<beans:bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"></beans:bean> 
 	
+	<!-- sessionAuthInterceptor -->
+	<beans:bean id="sessionAuthInterceptor" class="com.mycgv_jsp.interceptor.SessionAuthInterceptor"></beans:bean>
 	
-	<!-- 서버가 로딩될 때, 저 경로에 있는 controller가 자동으로 생성됨; 우리가 만든 적 X(Controller co = new Controller처럼 직접 새엉 안함) -->
+	<!-- sessionAuthInterceptor check request; 어떤 요청에 대해서 session check해야할 지  -->
+	<!-- 마이페이지라는 페이지로 요청이 들어왔을때 sessionAuthInterceptor한테 가서 세션 체크를 해라 -->
+	<interceptors>
+		<interceptor>
+			<mapping path="/mypage.do"/>
+			<beans:ref bean="sessionAuthInterceptor"></beans:ref>
+		</interceptor>
+		<interceptor>
+			<mapping path="/admin*"/>
+			<beans:ref bean="sessionAuthInterceptor"></beans:ref>
+		</interceptor>
+	</interceptors>
+	
+	<!-- 서버가 로딩될 때, 저 경로에 있는 controller가 자동으로 생성됨; 우리가 만든 적 X(Controller co = new Controller처럼 직접 생성 안함) -->
 	<context:component-scan base-package="com.mycgv_jsp.controller" />
 	<context:component-scan base-package="com.mycgv_jsp.dao" />
+	<context:component-scan base-package="com.mycgv_jsp.service" />
+	
+	<!--@Service("boardService") 붙여도 에러남; 서버 시작할 때 여기 참조하는데 이 밑에 라인을 추가 안하면 오류
+	 <context:component-scan base-package="com.mycgv_jsp.service" /> -->
 	
 	
 	

@@ -191,7 +191,7 @@ public class BoardController {
 		BoardDao boardDao = new BoardDao();
 		Map<String, Integer> param = pageServiceImpl.getPageResult(page, "board");
 		
-		ArrayList<BoardVo> list = boardDao.select(param.get("startCount"), param.get("endCount"));
+		ArrayList<BoardVo> list = boardService.getSelect(param.get("startCount"), param.get("endCount"));
 		//list 객체의 데이터를 JSON 형태로 생성
 		JsonObject jlist = new JsonObject(); //jlist = list
 		JsonArray jarray = new JsonArray();
